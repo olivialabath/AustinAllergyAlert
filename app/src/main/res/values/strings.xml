@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Austin Allergy Alert</string>
+    <string name="trace">Trace</string>
+    <string name="low">Low</string>
+    <string name="med">Med</string>
+    <string name="high">High</string>
+    <string name="v_high">V High</string>
+    <string name="rate">Rate the severity of your symptoms:</string>
+    <string name="save">Save</string>
+    <string name="notes">Notes:</string>
+</resources>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/reported_on"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:text="Showing values reported on:"
+        android:textColor="@android:color/primary_text_light"/>
+
+    <TextView
+        android:id="@+id/date_reported_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reported_on"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:padding="3dp"
+        android:text=""
+        android:textColor="@android:color/primary_text_light" />
+
+    <LinearLayout
+        android:id="@+id/chart_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorTrace"
+            android:src="@drawable/square"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/trace"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorLow"
+            android:src="@drawable/square"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/low"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorMed"
+            android:src="@drawable/square"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/med"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorHigh"
+            android:src="@drawable/square"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="@string/high"
+            android:textColor="@android:color/primary_text_light"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@color/colorVHigh"
+            android:src="@drawable/square"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/v_high"
+            android:textColor="@android:color/primary_text_light"/>
+
+    </LinearLayout>
+
+    <lecho.lib.hellocharts.view.ColumnChartView
+        android:id="@+id/allergen_chart"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:padding="15dp"
+        android:layout_above="@id/chart_key"
+        android:layout_below="@id/date_reported_tv"
+        android:background="@android:color/background_light">
+    </lecho.lib.hellocharts.view.ColumnChartView>
+
+</RelativeLayout>

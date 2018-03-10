@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:text="@string/rate"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <SeekBar
+            android:id="@+id/rating_seek_bar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/seekbar_face"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:padding="5dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:text="Additional notes:"/>
+    <EditText
+        android:id="@+id/rating_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:inputType="textMultiLine"
+        android:maxLength="280"
+        android:hint="ex: runny nose, sore throat" />
+
+</LinearLayout>
