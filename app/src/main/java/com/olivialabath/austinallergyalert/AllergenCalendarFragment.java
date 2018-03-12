@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,8 +30,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     private TextView mDateTV;
     private ImageButton mEditButton;
 
-    private Calendar mSelectedDate = Calendar.getInstance();
-    private Calendar mCurrentDate = Calendar.getInstance();
+    private LocalDate mSelectedDate = LocalDate.now();
+    private LocalDate mCurrentDate = LocalDate.now();
     private final SimpleDateFormat calendarDateFormat = new SimpleDateFormat("EEE MMM d, yyyy");
     private final SimpleDateFormat dialogDateFormat = new SimpleDateFormat("EEEE MMMM d");
     private final String TAG = "AllergenCalendarFrag";
@@ -48,7 +50,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
 
         // initialize the selected date textview
         mDateTV = (TextView) v.findViewById((R.id.calendar_date_tv));
-        mDateTV.setText(calendarDateFormat.format(mCurrentDate.getTime()));
+        mDateTV.setText(mSelectedDate.toString("EEE MMM d, yyyy"));
 
         // initialize the edit button
         mEditButton = (ImageButton) v.findViewById(R.id.rating_edit_button);
@@ -65,15 +67,15 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         mCalendarView.setOnDateClickListener(new CustomCalendarView.OnDateClickListener(){
             String note = "this is where the note should go";
             @Override
-            public void onDateClick(@NonNull Calendar selectedDay, @NonNull TextView tv, @NonNull String note){
+            public void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView tv, @NonNull String note){
                 // change the date textview and selected date in this class
-                mDateTV.setText(calendarDateFormat.format(selectedDay.getTime()));
+                mDateTV.setText(selectedDay.toString("EEE MMM d, yyyy"));
                 mSelectedDate = selectedDay;
 
                 // disable the edit button if selected day is in the future
-                if((selectedDay.get(Calendar.YEAR) == mCurrentDate.get(Calendar.YEAR)
-                        && selectedDay.get(Calendar.DAY_OF_YEAR) > mCurrentDate.get(Calendar.DAY_OF_YEAR))
-                        || selectedDay.get(Calendar.YEAR) > mCurrentDate.get(Calendar.YEAR)){
+                if((mSelectedDate.getYear() == mCurrentDate.getYear()
+                        && mSelectedDate.getDayOfYear() > mCurrentDate.getDayOfYear())
+                        || mSelectedDate.getYear() > mCurrentDate.getYear()){
                     Log.i(TAG, "disabling edit button");
                     mEditButton.setEnabled(false);
                     mEditButton.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
@@ -91,7 +93,9 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     }
 
     private void showRatingDialog(){
-        String dateString = dialogDateFormat.format(mSelectedDate.getTime()) + CalendarHelper.getDayOfMonthSuffix(mSelectedDate);
+        Calendar c = Calendar.getInstance();
+        c.setTime(mSelectedDate.toDate());
+        String dateString = mSelectedDate.toString("EEEE MMMM d") + CalendarHelper.getDayOfMonthSuffix(c);
 
 //        Rating rating = ratings.get(mSelectedDate.get(Calendar.DAY_OF_MONTH - 1));
 
@@ -132,8 +136,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         new Thread(new Runnable() {
             @Override
             public void run() {
-                db.ratingDAO().insertRating(new Rating(CalendarHelper.getEpochDays(mSelectedDate), rating, note));
-                Log.i(TAG, "saving note for " + mSelectedDate.getTime().toString());
+                db.ratingDAO().insertRating(new Rating(mSelectedDate.toDateTimeAtStartOfDay().getMillis() / 86400000, rating, note));
+                Log.i(TAG, "saving note for " + mSelectedDate.toString());
             }
         }).start();
     }

@@ -82,7 +82,7 @@ public class CustomCalendarView extends LinearLayout
     }
 
     public interface OnDateClickListener {
-        void onDateClick(@NonNull Calendar selectedDay, @NonNull TextView view, @NonNull String note);
+        void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView view, @NonNull String note);
     }
 
     /**
@@ -184,7 +184,7 @@ public class CustomCalendarView extends LinearLayout
 
     private AdapterView.OnItemClickListener onDayClickedListener = new AdapterView.OnItemClickListener() {
 
-////        private TextView prevView;
+//        private TextView prevView;
 //        private int prevBGColor;
 //        private int prevTextColor;
 //        private LocalDate prevDate;
@@ -230,7 +230,7 @@ public class CustomCalendarView extends LinearLayout
 
             // update the mOnDateClickListener
             if(mOnDateClickListener != null)
-                mOnDateClickListener.onDateClick(selectedDate.toDateTimeAtStartOfDay().toCalendar(Locale.ENGLISH), tv, "note goes here");
+                mOnDateClickListener.onDateClick(selectedDate, tv, "note goes here");
         }
     };
 
