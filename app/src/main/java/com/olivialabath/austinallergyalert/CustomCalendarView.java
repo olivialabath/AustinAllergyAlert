@@ -141,7 +141,7 @@ public class CustomCalendarView extends LinearLayout
         btnNextMonth.setColorFilter(ContextCompat.getColor(context, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
 
 
-        grid.setOnItemClickListener(onDayClickedListener);
+        grid.setOnItemClickListener(new onDayClickedListener());
 
     }
 
@@ -179,15 +179,14 @@ public class CustomCalendarView extends LinearLayout
     public void setRatings(List<Rating> ratings){
         this.ratings = ratings;
         grid.setAdapter(new CalendarAdapter());
+        grid.setOnItemClickListener(new onDayClickedListener());
     }
 
-    private AdapterView.OnItemClickListener onDayClickedListener = new AdapterView.OnItemClickListener() {
+    private class onDayClickedListener implements AdapterView.OnItemClickListener {
 
         private TextView prevView;
-        private int prevBGColor;
-        private int prevTextColor;
         private LocalDate prevDate;
-//        private int prevRating;
+        int prevPosition;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -197,20 +196,22 @@ public class CustomCalendarView extends LinearLayout
 
             TextView tv = (TextView) view;
 
-            //
+            // reset the colors of the previously selected view
             if(prevView != null && position < ratings.size()){
-                if(selectedDate.getMonthOfYear() == displayDate.getMonthOfYear()
-                    && selectedDate.getYear() == displayDate.getYear()) {
-                    prevView.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
+                if(prevDate.getMonthOfYear() == displayDate.getMonthOfYear()
+                    && prevDate.getYear() == displayDate.getYear()) {
+                    prevView.setBackgroundColor(getBGColor(ratings.get(prevPosition).getRating()));
                     prevView.setTextColor(Color.BLACK);
                 }
                 else{
-                    prevView.setBackgroundColor(0xFBFBFB);
+                    prevView.setBackgroundColor(getBGColor(ratings.get(prevPosition).getRating()));
+                    prevView.getBackground().setAlpha(32);
                     prevView.setTextColor(Color.LTGRAY);
                 }
             }
 
             prevView = tv;
+            prevPosition = position;
 
             // highlight the selected date
             view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
@@ -272,20 +273,16 @@ public class CustomCalendarView extends LinearLayout
                 tv.setTypeface(null, Typeface.BOLD);
             }
 
-            if(position < ratings.size()
-                    && date.getMonthOfYear() == displayDate.getMonthOfYear()
-                    && date.getYear() == displayDate.getYear())
-                tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
-
-
-            // if the current day is also the selected day, highlight it
-            if(date.equals(selectedDate)){
-//                prevView = tv;
-//                prevBGColor = getBGColor(ratings.get(position).getRating());
-//                prevDate = days.get(position);
-
-                tv.setTextColor(Color.WHITE);
-                tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            // if ratings have been set, color the date based on its rating
+            if(position < ratings.size()) {
+                if(date.getMonthOfYear() == displayDate.getMonthOfYear()
+                        && date.getYear() == displayDate.getYear()){
+                    tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
+                }
+                else{
+                    tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
+                    tv.getBackground().setAlpha(32);
+                }
             }
 
             // set text
