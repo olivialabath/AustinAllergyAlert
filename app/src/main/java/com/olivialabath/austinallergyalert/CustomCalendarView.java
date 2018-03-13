@@ -46,11 +46,12 @@ public class CustomCalendarView extends LinearLayout
     private TextView txtDate;
     private GridView grid;
     private OnDateClickListener mOnDateClickListener;
+    private OnMonthChangedListener mOnMonthChangedListener;
 
-    private TextView prevView;
-    private int prevBGColor;
-    private int prevTextColor;
-    private LocalDate prevDate;
+//    private TextView prevView;
+//    private int prevBGColor;
+//    private int prevTextColor;
+//    private LocalDate prevDate;
 
     private List<LocalDate> days;
     private List<Rating> ratings;
@@ -60,7 +61,7 @@ public class CustomCalendarView extends LinearLayout
     private LocalDate selectedDate = LocalDate.now();
     private LocalDate displayDate = LocalDate.now();
 
-    private AppDatabase db;
+//    private AppDatabase db;
 
     private final String TAG = "CustomCalendarView";
 
@@ -81,8 +82,16 @@ public class CustomCalendarView extends LinearLayout
         mOnDateClickListener = listener;
     }
 
+    public void setOnMonthChangedListener(OnMonthChangedListener listener){
+        mOnMonthChangedListener = listener;
+    }
+
     public interface OnDateClickListener {
         void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView view, @NonNull String note);
+    }
+
+    public interface OnMonthChangedListener {
+        void onMonthChange(@NonNull LocalDate displayDate);
     }
 
     /**
@@ -91,7 +100,7 @@ public class CustomCalendarView extends LinearLayout
     private void init(Context context)
     {
         // initialize the database
-        db = AppDatabase.getInstance(context);
+//        db = AppDatabase.getInstance(context);
 
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -110,18 +119,9 @@ public class CustomCalendarView extends LinearLayout
             @Override
             public void onClick(View v) {
                 displayDate = displayDate.minusMonths(1);
-
-                // disable the prevMonth button for dates before Jan 1, 2017
-                if(displayDate.withDayOfMonth(1).compareTo(calendarLowerBound) <= 0){
-                    btnPrevMonth.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
-                    btnPrevMonth.setEnabled(false);
-                }
-                // enable it for months after that date
-                else if(!btnNextMonth.isEnabled() && displayDate.compareTo(calendarUpperBound) <= 0){
-                    btnNextMonth.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
-                    btnNextMonth.setEnabled(true);
-                }
-
+                testPrevMonthButton();
+                if(mOnMonthChangedListener != null)
+                    mOnMonthChangedListener.onMonthChange(displayDate);
                 updateCalendar();
             }
         });
@@ -130,18 +130,8 @@ public class CustomCalendarView extends LinearLayout
             @Override
             public void onClick(View v) {
                 displayDate = displayDate.plusMonths(1);
-
-                // disable the nextMonth button for dates after the current date + 12 months
-                if(displayDate.withDayOfMonth(1).compareTo(calendarUpperBound) >= 0){
-                    btnNextMonth.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
-                    btnNextMonth.setEnabled(false);
-                }
-                // enable it for months before that date
-                else if(!btnPrevMonth.isEnabled() && displayDate.compareTo(calendarLowerBound) >= 0){
-                    btnPrevMonth.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
-                    btnPrevMonth.setEnabled(true);
-                }
-
+                testNextMonthButton();if(mOnMonthChangedListener != null)
+                    mOnMonthChangedListener.onMonthChange(displayDate);
                 updateCalendar();
             }
         });
@@ -149,6 +139,9 @@ public class CustomCalendarView extends LinearLayout
         // set the month button colors
         btnPrevMonth.setColorFilter(ContextCompat.getColor(context, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
         btnNextMonth.setColorFilter(ContextCompat.getColor(context, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+
+
+        grid.setOnItemClickListener(onDayClickedListener);
 
     }
 
@@ -174,55 +167,50 @@ public class CustomCalendarView extends LinearLayout
         Log.d(TAG, "Days = " + Arrays.toString(days.toArray()));
 
         // update grid
-        loadRatingsByMonth();
-        grid.setAdapter(new CalendarAdapter());
+//        loadRatingsByMonth();
+//        grid.setOnItemClickListener(onDayClickedListener);
+//        grid.setAdapter(new CalendarAdapter());
 
         // update title
         SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
         txtDate.setText(displayDate.toString("MMM yyyy"));
     }
 
+    public void setRatings(List<Rating> ratings){
+        this.ratings = ratings;
+        grid.setAdapter(new CalendarAdapter());
+    }
+
     private AdapterView.OnItemClickListener onDayClickedListener = new AdapterView.OnItemClickListener() {
 
-//        private TextView prevView;
-//        private int prevBGColor;
-//        private int prevTextColor;
-//        private LocalDate prevDate;
-        private int prevRating;
+        private TextView prevView;
+        private int prevBGColor;
+        private int prevTextColor;
+        private LocalDate prevDate;
+//        private int prevRating;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            prevDate = selectedDate;
             selectedDate = days.get(position);
             Log.i(TAG, "SelectedDate = " + selectedDate.toString());
 
-            // if the user clicks on a valid date outside of the current month,
-            // take them to that month
-            if(selectedDate.getMonthOfYear() < displayDate.getMonthOfYear() && selectedDate.compareTo(calendarLowerBound) >= 0){
-                displayDate = displayDate.minusMonths(1);
-                updateCalendar();
-                return;
-            } else if(selectedDate.getMonthOfYear() > displayDate.getMonthOfYear() && selectedDate.compareTo(calendarUpperBound) <= 0){
-                displayDate = displayDate.plusMonths(1);
-                updateCalendar();
-                return;
-            }
-
-            // reassign the previous background and text colors
-            if(prevView != null && selectedDate.getMonthOfYear() == prevDate.getMonthOfYear()
-                    && selectedDate.getYear() == prevDate.getYear()){
-                prevView.setBackgroundColor(prevBGColor);
-                prevView.setTextColor(Color.BLACK);
-            }
-
-            // save the previous view, its background color, and its text color
             TextView tv = (TextView) view;
+
+            //
+            if(prevView != null && position < ratings.size()){
+                if(selectedDate.getMonthOfYear() == displayDate.getMonthOfYear()
+                    && selectedDate.getYear() == displayDate.getYear()) {
+                    prevView.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
+                    prevView.setTextColor(Color.BLACK);
+                }
+                else{
+                    prevView.setBackgroundColor(0xFBFBFB);
+                    prevView.setTextColor(Color.LTGRAY);
+                }
+            }
+
             prevView = tv;
-            prevBGColor = getBGColor(ratings.get(position).getRating());
-//            prevTextColor = tv.getCurrentTextColor();
-            prevTextColor = Color.BLACK;
-            prevDate = days.get(position);
-            prevRating = ratings.get(position).getRating();
 
             // highlight the selected date
             view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
@@ -282,23 +270,19 @@ public class CustomCalendarView extends LinearLayout
             else if (date.equals(currentDate))
             {
                 tv.setTypeface(null, Typeface.BOLD);
-                tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
-            }
-            // otherwise, set the background color based on its rating
-            else {
-                if(position < ratings.size()) {
-                    Log.i(TAG, "rating = " + ratings.get(position).getRating());
-                    tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
-                }
             }
 
+            if(position < ratings.size()
+                    && date.getMonthOfYear() == displayDate.getMonthOfYear()
+                    && date.getYear() == displayDate.getYear())
+                tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
 
 
             // if the current day is also the selected day, highlight it
-            if(date.equals(selectedDate) && date.getMonthOfYear() == displayDate.getMonthOfYear()){
-                prevView = tv;
-                prevBGColor = getBGColor(ratings.get(position).getRating());
-                prevDate = days.get(position);
+            if(date.equals(selectedDate)){
+//                prevView = tv;
+//                prevBGColor = getBGColor(ratings.get(position).getRating());
+//                prevDate = days.get(position);
 
                 tv.setTextColor(Color.WHITE);
                 tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
@@ -328,41 +312,29 @@ public class CustomCalendarView extends LinearLayout
         }
     }
 
-    private void loadRatingsByDate(final Calendar c){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // get the selected day's rating
-                Rating r = db.ratingDAO().loadByDate(CalendarHelper.getEpochDays(c));
-                if(r == null){
-                    r = new Rating(CalendarHelper.getEpochDays(c), 0, "");
-                }
-                ratings.add(r);
-            }
-        }).start();
+    private void testPrevMonthButton(){
+        // disable the prevMonth button for dates before Jan 1, 2017
+        if(displayDate.withDayOfMonth(1).compareTo(calendarLowerBound) <= 0){
+            btnPrevMonth.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
+            btnPrevMonth.setEnabled(false);
+        }
+        // enable it for months after that date
+        else if(!btnNextMonth.isEnabled() && displayDate.compareTo(calendarUpperBound) <= 0){
+            btnNextMonth.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+            btnNextMonth.setEnabled(true);
+        }
     }
 
-    private void loadRatingsByMonth(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // get the current month's ratings
-                long to = days.get(0).toDateTimeAtStartOfDay().getMillis() / 86400000 + 1;
-                long from = days.get(days.size() - 1).toDateTimeAtStartOfDay().getMillis() / 86400000 + 1;
-                ratings = db.ratingDAO().loadFromRange(to, from);
-
-                for(int i = 0; i < days.size(); ++i){
-                    long day = days.get(i).toDateTimeAtStartOfDay().getMillis() / 86400000;
-                    if(i >= ratings.size() || day != ratings.get(i).getEpochDays()){
-                        ratings.add(i, new Rating(day, 0, ""));
-                    }
-                }
-
-                // sort the ratings
-                Collections.sort(ratings);
-                Log.i(TAG, "Ratings: " + Arrays.toString(ratings.toArray()));
-                grid.setOnItemClickListener(onDayClickedListener);
-            }
-        }).start();
+    private void testNextMonthButton(){
+        // disable the nextMonth button for dates after the current date + 12 months
+        if(displayDate.withDayOfMonth(1).compareTo(calendarUpperBound) >= 0){
+            btnNextMonth.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
+            btnNextMonth.setEnabled(false);
+        }
+        // enable it for months before that date
+        else if(!btnPrevMonth.isEnabled() && displayDate.compareTo(calendarLowerBound) >= 0){
+            btnPrevMonth.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+            btnPrevMonth.setEnabled(true);
+        }
     }
 }

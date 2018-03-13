@@ -17,8 +17,8 @@ public interface RatingDAO {
     @Query("SELECT * FROM rating")
     List<Rating> getAll();
 
-    @Query("SELECT * FROM rating WHERE epochDays BETWEEN :to AND :from")
-    List<Rating> loadFromRange(long to, long from);
+    @Query("SELECT * FROM rating WHERE epochDays BETWEEN :from AND :to")
+    List<Rating> loadFromRange(long from, long to);
 
     @Query("SELECT * FROM rating WHERE epochDays = :epochDays")
     Rating loadByDate(long epochDays);
