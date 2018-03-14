@@ -32,6 +32,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     private TextView mDateTV;
     private ImageButton mEditButton;
 
+    private Rating selectedRating;
     private LocalDate mSelectedDate = LocalDate.now();
     private LocalDate mDisplayDate = LocalDate.now();
     private LocalDate mCurrentDate = LocalDate.now();
@@ -47,10 +48,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.allergen_calendar_fragment,container,false);
 
-        // initialize the database
+        // initialize the database and load the current month's ratings
         db = AppDatabase.getInstance(getContext());
-//        loadAllRatings();
-//        loadRatingsByMonth();
         LoadRatingsByMonthTask task = new LoadRatingsByMonthTask();
         task.execute();
 
@@ -73,14 +72,11 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         mCalendarView.setOnDateClickListener(new CustomCalendarView.OnDateClickListener(){
             String note = "this is where the note should go";
             @Override
-            public void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView tv, @NonNull String note){
+            public void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView tv, @NonNull int position){
                 // change the date textview and selected date in this class
                 mDateTV.setText(selectedDay.toString("EEE MMM d, yyyy"));
-
-                // if the new selected day is outside of the current selected month, update the ratings
-//                loadRatingsByMonth();
-
                 mSelectedDate = selectedDay;
+                selectedRating = ratings.get(mCalendarView.getDays().indexOf(mSelectedDate));
 
                 // disable the edit button if selected day is in the future
                 if((mSelectedDate.getYear() == mCurrentDate.getYear()
@@ -103,7 +99,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             @Override
             public void onMonthChange(@NonNull LocalDate displayMonth) {
                 mDisplayDate = displayMonth;
-//                loadRatingsByMonth();
+                // load the new month's ratings
                 LoadRatingsByMonthTask task = new LoadRatingsByMonthTask();
                 task.execute();
             }
@@ -117,9 +113,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         c.setTime(mSelectedDate.toDate());
         String dateString = mSelectedDate.toString("EEEE MMMM d") + CalendarHelper.getDayOfMonthSuffix(c);
 
-//        Rating rating = ratings.get(mSelectedDate.get(Calendar.DAY_OF_MONTH - 1));
-
-        RatingDialogFragment ratingDialog = RatingDialogFragment.newInstance(dateString, 0, "this is a note");
+//        Rating rating = new Rating()
+        RatingDialogFragment ratingDialog = RatingDialogFragment.newInstance(dateString, selectedRating.getRating(), selectedRating.getNote());
         ratingDialog.setTargetFragment(this, 300);
         ratingDialog.show(getFragmentManager(), "rating");
     }
@@ -144,20 +139,20 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
 
         @Override
         protected List<Rating> doInBackground(Void... voids) {
-            // get the current month's ratings
+            // get the from and to values for the db query
             LocalDate startDate = mDisplayDate.withDayOfMonth(1);
             int monthBeginCell = (startDate.getDayOfWeek()) % 7;
             startDate = startDate.minusDays(monthBeginCell);
             LocalDate endDate = startDate.plusDays(41);
             Log.d(TAG, "startDate: " + startDate.toString() + ", endDate: " + endDate.toString());
-
             long from = startDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
             long to = endDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
-
             Log.d(TAG, "from: "  + from + ", to: " + to);
 
+            // get the ratings
             List<Rating> ratingsList = db.ratingDAO().loadFromRange(from, to);
 
+            // create empty ratings for any days that don't have ratings
             for (int i = 0; i < 42; ++i) {
                 long day = startDate.plusDays(i).toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
                 if (i >= ratingsList.size() || day != ratingsList.get(i).getEpochDays())
@@ -172,6 +167,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         @Override
         protected void onPostExecute(List<Rating> ratingList){
             ratings = ratingList;
+            if(selectedRating == null)
+                selectedRating = ratings.get(mCalendarView.getDays().indexOf(mSelectedDate));
             mCalendarView.setRatings(ratings);
         }
     }
@@ -180,7 +177,19 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         new Thread(new Runnable() {
             @Override
             public void run() {
-                db.ratingDAO().insertRating(new Rating(mSelectedDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY, rating, note));
+                Rating r = new Rating(mSelectedDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY, rating, note);
+
+                // update ratings if the new rating is in the current month
+                int index = mCalendarView.getDays().indexOf(mSelectedDate);
+                if(index > -1){
+                    ratings.set(index, r);
+                    mCalendarView.setRating(index, r);
+                }
+
+                // update the selectedRating
+                selectedRating = r;
+
+                db.ratingDAO().insertRating(r);
                 Log.i(TAG, "saving note for " + mSelectedDate.toString());
             }
         }).start();

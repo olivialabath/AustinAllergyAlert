@@ -1,10 +1,7 @@
 package com.olivialabath.austinallergyalert;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -27,11 +24,7 @@ import org.joda.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by olivialabath on 11/8/17.
@@ -48,11 +41,6 @@ public class CustomCalendarView extends LinearLayout
     private OnDateClickListener mOnDateClickListener;
     private OnMonthChangedListener mOnMonthChangedListener;
 
-//    private TextView prevView;
-//    private int prevBGColor;
-//    private int prevTextColor;
-//    private LocalDate prevDate;
-
     private List<LocalDate> days;
     private List<Rating> ratings;
     private final LocalDate calendarLowerBound = new LocalDate(2017, 1, 1);
@@ -60,8 +48,6 @@ public class CustomCalendarView extends LinearLayout
     private final LocalDate currentDate = LocalDate.now();
     private LocalDate selectedDate = LocalDate.now();
     private LocalDate displayDate = LocalDate.now();
-
-//    private AppDatabase db;
 
     private final String TAG = "CustomCalendarView";
 
@@ -87,7 +73,7 @@ public class CustomCalendarView extends LinearLayout
     }
 
     public interface OnDateClickListener {
-        void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView view, @NonNull String note);
+        void onDateClick(@NonNull LocalDate selectedDay, @NonNull TextView view, @NonNull int position);
     }
 
     public interface OnMonthChangedListener {
@@ -99,9 +85,6 @@ public class CustomCalendarView extends LinearLayout
      */
     private void init(Context context)
     {
-        // initialize the database
-//        db = AppDatabase.getInstance(context);
-
         LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -166,11 +149,6 @@ public class CustomCalendarView extends LinearLayout
         }
         Log.d(TAG, "Days = " + Arrays.toString(days.toArray()));
 
-        // update grid
-//        loadRatingsByMonth();
-//        grid.setOnItemClickListener(onDayClickedListener);
-//        grid.setAdapter(new CalendarAdapter());
-
         // update title
         SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
         txtDate.setText(displayDate.toString("MMM yyyy"));
@@ -180,6 +158,14 @@ public class CustomCalendarView extends LinearLayout
         this.ratings = ratings;
         grid.setAdapter(new CalendarAdapter());
         grid.setOnItemClickListener(new onDayClickedListener());
+    }
+
+    public void setRating(int position, Rating r){
+        ratings.set(position, r);
+    }
+
+    public List<LocalDate> getDays(){
+        return days;
     }
 
     private class onDayClickedListener implements AdapterView.OnItemClickListener {
@@ -219,7 +205,7 @@ public class CustomCalendarView extends LinearLayout
 
             // update the mOnDateClickListener
             if(mOnDateClickListener != null)
-                mOnDateClickListener.onDateClick(selectedDate, tv, "note goes here");
+                mOnDateClickListener.onDateClick(selectedDate, tv, position);
         }
     };
 
