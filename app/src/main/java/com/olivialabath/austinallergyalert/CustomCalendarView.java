@@ -280,15 +280,15 @@ public class CustomCalendarView extends LinearLayout
 
     private int getBGColor(int rating){
         switch(rating){
-            case 1:
+            case 0:
                 return ContextCompat.getColor(getContext(), R.color.colorTrace);
-            case 2:
+            case 1:
                 return ContextCompat.getColor(getContext(), R.color.colorLow);
-            case 3:
+            case 2:
                 return ContextCompat.getColor(getContext(), R.color.colorMed);
-            case 4:
+            case 3:
                 return ContextCompat.getColor(getContext(), R.color.colorHigh);
-            case 5:
+            case 4:
                 return ContextCompat.getColor(getContext(), R.color.colorVHigh);
             default:
                 return 0xFBFBFB;

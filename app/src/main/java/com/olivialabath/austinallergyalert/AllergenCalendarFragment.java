@@ -156,7 +156,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             for (int i = 0; i < 42; ++i) {
                 long day = startDate.plusDays(i).toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
                 if (i >= ratingsList.size() || day != ratingsList.get(i).getEpochDays())
-                    ratingsList.add(i, new Rating(day, 0, ""));
+                    ratingsList.add(i, new Rating(day, -1, ""));
             }
 
             Log.i(TAG, "selected month's Ratings: " + Arrays.toString(ratingsList.toArray()));

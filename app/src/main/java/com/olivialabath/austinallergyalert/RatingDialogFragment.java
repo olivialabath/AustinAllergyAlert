@@ -2,6 +2,7 @@ package com.olivialabath.austinallergyalert;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
@@ -107,24 +108,29 @@ public class RatingDialogFragment extends DialogFragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch(progress) {
                     case 0:
-                        rating = progress + 1;
+                        Log.d(TAG, "setting face to very good");
+                        if(rating == -1) rating = 0;
                         mSeekBarImage.setImageResource(R.mipmap.ic_very_good);
                         break;
                     case 1:
-                        rating = progress + 1;
+                        Log.d(TAG, "setting face to good");
                         mSeekBarImage.setImageResource(R.mipmap.ic_good);
                         break;
                     case 2:
-                        rating = progress + 1;
+                        Log.d(TAG, "setting face to neutral");
                         mSeekBarImage.setImageResource(R.mipmap.ic_neutral);
                         break;
                     case 3:
-                        rating = progress + 1;
+                        Log.d(TAG, "setting face to bad");
                         mSeekBarImage.setImageResource(R.mipmap.ic_bad);
                         break;
                     case 4:
-                        rating = progress + 1;
+                        Log.d(TAG, "setting face to very bad");
                         mSeekBarImage.setImageResource(R.mipmap.ic_very_bad);
+                        break;
+                    default:
+                        Log.d(TAG, "setting face to very good");
+                        mSeekBarImage.setImageResource(R.mipmap.ic_very_good);
                 }
             }
 
@@ -135,12 +141,15 @@ public class RatingDialogFragment extends DialogFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                rating = seekBar.getProgress();
             }
         });
 
-        if(rating > 0) mSeekBar.setProgress(rating - 1);
-        else mSeekBar.setProgress(rating);
+
+        mSeekBar.setProgress(0);
+        if(rating > -1){
+            mSeekBar.setProgress(rating);
+        }
 
     }
 }
