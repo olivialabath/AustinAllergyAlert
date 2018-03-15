@@ -276,10 +276,12 @@ public class CustomCalendarView extends LinearLayout
             }
 
             if(date.equals(selectedDate)){
+                // save this view as the previous date
                 prevView = tv;
                 prevDate = date;
                 prevPosition = position;
 
+                // highlight the selected date
                 tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
                 tv.setTextColor(Color.WHITE);
             }

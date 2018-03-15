@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.joda.time.LocalDate;
@@ -31,6 +32,8 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     private CustomCalendarView mCalendarView;
     private TextView mDateTV;
     private ImageButton mEditButton;
+    private ImageView mRatingFace;
+    private TextView mNotesText;
 
     private Rating selectedRating;
     private LocalDate mSelectedDate = LocalDate.now();
@@ -57,6 +60,10 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         mDateTV = (TextView) v.findViewById((R.id.calendar_date_tv));
         mDateTV.setText(mSelectedDate.toString("EEE MMM d, yyyy"));
 
+        // init the notes and rating face
+        mRatingFace = (ImageView) v.findViewById(R.id.calendar_face);
+        mNotesText = (TextView) v.findViewById(R.id.calendar_notes);
+
         // initialize the edit button
         mEditButton = (ImageButton) v.findViewById(R.id.rating_edit_button);
         mEditButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
@@ -77,6 +84,10 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                 mDateTV.setText(selectedDay.toString("EEE MMM d, yyyy"));
                 mSelectedDate = selectedDay;
                 selectedRating = ratings.get(mCalendarView.getDays().indexOf(mSelectedDate));
+
+                // update the face and notes
+                mRatingFace.setImageResource(getFace(ratings.get(position).getRating()));
+                mNotesText.setText(ratings.get(position).getNote());
 
                 // disable the edit button if selected day is in the future
                 if((mSelectedDate.getYear() == mCurrentDate.getYear()
@@ -121,6 +132,10 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
 
     @Override
     public void onSave(int rating, String note) {
+        // update the face and note
+        mRatingFace.setImageResource(getFace(rating));
+        mNotesText.setText(note);
+
         Log.i(TAG, "saving rating: " + rating + ", note: " + note);
         insertRating(rating, note);
     }
@@ -155,8 +170,18 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             // create empty ratings for any days that don't have ratings
             for (int i = 0; i < 42; ++i) {
                 long day = startDate.plusDays(i).toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
+                Rating r = new Rating(day, -1, "");
                 if (i >= ratingsList.size() || day != ratingsList.get(i).getEpochDays())
-                    ratingsList.add(i, new Rating(day, -1, ""));
+                    ratingsList.add(i, r);
+                else
+                    r = ratingsList.get(i);
+
+//                Log.d(TAG, "doInBackground: selectedDate = " + mSelectedDate.toString() + ", startDate = " + startDate.toString());
+
+                if(mSelectedDate.equals(startDate.plusDays(i))){
+                    mRatingFace.setImageResource(getFace(r.getRating()));
+                    mNotesText.setText(r.getNote());
+                }
             }
 
             Log.i(TAG, "selected month's Ratings: " + Arrays.toString(ratingsList.toArray()));
@@ -193,6 +218,23 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                 Log.i(TAG, "saving note for " + mSelectedDate.toString());
             }
         }).start();
+    }
+
+    public int getFace(int rating){
+        switch(rating) {
+            case 0:
+                return R.mipmap.ic_very_good;
+            case 1:
+                return R.mipmap.ic_good;
+            case 2:
+                return R.mipmap.ic_neutral;
+            case 3:
+                return R.mipmap.ic_bad;
+            case 4:
+                return R.mipmap.ic_very_bad;
+            default:
+                return 0;
+        }
     }
 
 }
