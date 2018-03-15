@@ -185,7 +185,6 @@ public class AllergenDailyFragment extends Fragment {
                         .withHashKeyValues(a);
                 List<Allergen> allergenList = mapper.query(Allergen.class, queryExpression);
 
-//                PaginatedScanList<Allergen> result = mapper.scan(Allergen.class, new DynamoDBScanExpression());
 //                Log.i("queryAllergensByDate", Arrays.toString(result.toArray()));
 
                 mAllergens = new Allergen[allergenList.size()];
@@ -211,7 +210,11 @@ public class AllergenDailyFragment extends Fragment {
                 mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
                 mChart.setOnValueTouchListener(new ValueTouchListener());
                 setChartValues();
+                if(mAllergens.length >= 6){
+                    data.getAxisXBottom().setHasTiltedLabels(true);
+                }
                 mChart.setColumnChartData(data);
+
 
                 /* set the "Reported on date" textview */
                 mDateReported = mRootview.findViewById(R.id.date_reported_tv);
