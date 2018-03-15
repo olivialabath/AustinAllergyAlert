@@ -51,6 +51,10 @@ public class CustomCalendarView extends LinearLayout
 
     private final String TAG = "CustomCalendarView";
 
+    private TextView prevView;
+    private LocalDate prevDate;
+    private int prevPosition;
+
     public CustomCalendarView(Context context)
     {
         super(context);
@@ -170,9 +174,9 @@ public class CustomCalendarView extends LinearLayout
 
     private class onDayClickedListener implements AdapterView.OnItemClickListener {
 
-        private TextView prevView;
-        private LocalDate prevDate;
-        int prevPosition;
+//        private TextView prevView;
+//        private LocalDate prevDate;
+//        private int prevPosition;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -207,7 +211,7 @@ public class CustomCalendarView extends LinearLayout
             if(mOnDateClickListener != null)
                 mOnDateClickListener.onDateClick(selectedDate, tv, position);
         }
-    };
+    }
 
     private class CalendarAdapter extends BaseAdapter{
 
@@ -269,6 +273,15 @@ public class CustomCalendarView extends LinearLayout
                     tv.setBackgroundColor(getBGColor(ratings.get(position).getRating()));
                     tv.getBackground().setAlpha(32);
                 }
+            }
+
+            if(date.equals(selectedDate)){
+                prevView = tv;
+                prevDate = date;
+                prevPosition = position;
+
+                tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                tv.setTextColor(Color.WHITE);
             }
 
             // set text
