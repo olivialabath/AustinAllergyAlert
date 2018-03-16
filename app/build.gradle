@@ -25,13 +25,10 @@ android {
 
 dependencies {
     //compile fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation'junit:junit:4.12'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation'com.github.lecho:hellocharts-library:1.5.8@aar'
-    implementation'org.jsoup:jsoup:1.11.2'
-//    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
-//    implementation 'com.amazonaws:aws-android-sdk-core:2.6.16'
-//    implementation 'com.amazonaws:aws-android-sdk-ddb:2.6.16'
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.16'
     implementation group: 'joda-time', name: 'joda-time', version: '2.9.9'
 
