@@ -50,7 +50,6 @@ public class AllergenDailyFragment extends Fragment {
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d, yyyy");
 
     private DynamoDBMapper mapper;
-    private AppDatabase db;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -72,15 +71,10 @@ public class AllergenDailyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootview = inflater.inflate(R.layout.allergen_daily_fragment,container,false);
 
-         /* instantiate the database */
-        //db = Room.databaseBuilder(getContext(), AppDatabase.class, "austinallergyalert").build();
-
         /* get today's allergens */
         queryAllergensByDate();
 
-
         Log.i(TAG, "QueryDate: " + mQueryDate.getTime().toString());
-
 
         return mRootview;
     }
@@ -111,6 +105,11 @@ public class AllergenDailyFragment extends Fragment {
         axisX.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
         axisX.setTextSize(13);
         axisX.setName("Allergens");
+        /* if more than 6 allergens are found, tilt the labels
+                 * to prevent values from overlapping */
+        if(mAllergens.length >= 6){
+            axisX.setHasTiltedLabels(true);
+        }
         data.setAxisXBottom(axisX);
 
         /* y axis stuff */
@@ -210,9 +209,6 @@ public class AllergenDailyFragment extends Fragment {
                 mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
                 mChart.setOnValueTouchListener(new ValueTouchListener());
                 setChartValues();
-                if(mAllergens.length >= 6){
-                    data.getAxisXBottom().setHasTiltedLabels(true);
-                }
                 mChart.setColumnChartData(data);
 
 
