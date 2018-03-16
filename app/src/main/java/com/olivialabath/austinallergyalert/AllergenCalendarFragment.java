@@ -177,11 +177,6 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                     r = ratingsList.get(i);
 
 //                Log.d(TAG, "doInBackground: selectedDate = " + mSelectedDate.toString() + ", startDate = " + startDate.toString());
-
-                if(mSelectedDate.equals(startDate.plusDays(i))){
-                    mRatingFace.setImageResource(getFace(r.getRating()));
-                    mNotesText.setText(r.getNote());
-                }
             }
 
             Log.i(TAG, "selected month's Ratings: " + Arrays.toString(ratingsList.toArray()));
@@ -194,6 +189,9 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             ratings = ratingList;
             if(selectedRating == null)
                 selectedRating = ratings.get(mCalendarView.getDays().indexOf(mSelectedDate));
+            mRatingFace.setImageResource(getFace(selectedRating.getRating()));
+            mNotesText.setText(selectedRating.getNote());
+
             mCalendarView.setRatings(ratings);
         }
     }
