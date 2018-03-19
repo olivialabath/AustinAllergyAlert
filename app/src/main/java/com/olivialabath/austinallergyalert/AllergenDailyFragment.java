@@ -140,6 +140,7 @@ public class AllergenDailyFragment extends Fragment {
     private Allergen[] getTestAllergens(){
         Calendar c = mQueryDate;
         Allergen[] allergenArray = {
+                new Allergen("Pine", 5, CalendarHelper.getEpochDays(c)),
                 new Allergen("Elm", 12, CalendarHelper.getEpochDays(c)),
                 new Allergen("Pigweed", 39, CalendarHelper.getEpochDays(c)),
                 new Allergen("Mold", 49, CalendarHelper.getEpochDays(c)),
@@ -188,6 +189,7 @@ public class AllergenDailyFragment extends Fragment {
 
                 mAllergens = new Allergen[allergenList.size()];
                 mAllergens = allergenList.toArray(mAllergens);
+//                mAllergens = getTestAllergens();
                 if(mAllergens.length == 0){
                     mQueryDate = CalendarHelper.prevWeekDay(mQueryDate);
                     Log.i(QUERY_TAG, "No allergens found for current query date, setting query date to " + mQueryDate.getTime().toString());

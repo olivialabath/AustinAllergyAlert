@@ -10,7 +10,7 @@
     <string name="notes">Notes:</string>
     <string name="about_text">Austin Allergy Alert was created to let people in Austin, TX view daily allergy counts and record the severity of their allergy symptoms.
             \n\nAllergen counts are found at twitter.com/ATXPollen, and are only reported on weekdays.
-            \n\nAllergens are divided into 4 groups: mold, grass, weed, and tree. Pet dander is not reported in this app.
+            \n\nAllergens are divided into 4 groups: mold, grass, weed, and tree. Pet dander is not reported.
             \n\nAn allergen\'s severity level is determined by its group.
             \n\nMold
                 \n\tTrace: &lt;50
