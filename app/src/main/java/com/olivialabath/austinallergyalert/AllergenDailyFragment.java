@@ -1,5 +1,6 @@
 package com.olivialabath.austinallergyalert;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExp
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +51,7 @@ public class AllergenDailyFragment extends Fragment {
     private ColumnChartData data;
     private Allergen[] mAllergens;
     private View mRootview;
+    private WeatherView mWeatherView;
     private Calendar mCurrentDate = CalendarHelper.now();
     private Calendar mQueryDate = CalendarHelper.getQueryDate();
     private TextView mDateReported;
@@ -69,10 +77,15 @@ public class AllergenDailyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        /* inflate views */
         mRootview = inflater.inflate(R.layout.allergen_daily_fragment,container,false);
+        mWeatherView = (WeatherView) mRootview.findViewById(R.id.daily_weather_view);
 
         /* get today's allergens */
         queryAllergensByDate();
+
+        /* get the 5 day forecast */
+        getWeather();
 
         Log.i(TAG, "QueryDate: " + mQueryDate.getTime().toString());
 
@@ -221,6 +234,32 @@ public class AllergenDailyFragment extends Fragment {
 
             }
         }).start();
+    }
+
+    private void getWeather(){
+
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = "https://api.darksky.net/forecast/" + Config.DarkSkyAPIKey + "/30.2672,-97.7431?exclude=currently,minutely,hourly,alerts,flags";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        WeatherParser wp = new WeatherParser();
+                        Weather[] weather = wp.parse(response.toString());
+                        Log.i("getWeather", Arrays.toString(weather));
+                        mWeatherView.setWeather(weather);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(stringRequest);
+
+
     }
 
 }

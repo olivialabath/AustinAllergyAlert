@@ -2,6 +2,7 @@ package com.olivialabath.austinallergyalert;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import static org.junit.Assert.*;
@@ -33,4 +34,5 @@ public class UnitTests {
         c = CalendarHelper.prevWeekDay(c);
         assertEquals(6, c.get(Calendar.DAY_OF_WEEK));
     }
+
 }
