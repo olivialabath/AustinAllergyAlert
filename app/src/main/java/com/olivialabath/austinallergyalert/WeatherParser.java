@@ -28,7 +28,7 @@ public class WeatherParser {
                 JSONObject day = forecast.getJSONObject(i);
 
                 // set the date
-                weather.setDate(new LocalDate(day.getLong("time") * 1000));
+                weather.setDate(new LocalDate((day.getLong("time") + 3600 * 5)* 1000));
 
                 // set the high and low
                 weather.setLoTemp((int) day.getDouble("temperatureMin"));
