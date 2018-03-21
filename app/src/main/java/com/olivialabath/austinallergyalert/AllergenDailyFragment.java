@@ -82,7 +82,8 @@ public class AllergenDailyFragment extends Fragment {
         mWeatherView = (WeatherView) mRootview.findViewById(R.id.daily_weather_view);
 
         /* get today's allergens */
-        queryAllergensByDate();
+        AllergenTask allergenTask = new AllergenTask();
+        allergenTask.execute();
 
         /* get the 5 day forecast */
         getWeather();
@@ -183,57 +184,58 @@ public class AllergenDailyFragment extends Fragment {
 
     }
 
-    public void queryAllergensByDate(){
+    private class AllergenTask extends AsyncTask<Void, Void, List<Allergen>>{
         final String QUERY_TAG = "queryAllergensByDate";
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long epochDayDate = CalendarHelper.getEpochDays(mQueryDate);
-                Log.i(QUERY_TAG, "epochDate: " + epochDayDate);
+        @Override
+        protected List<Allergen> doInBackground(Void... voids) {
+            long epochDayDate = CalendarHelper.getEpochDays(mQueryDate);
+            Log.i(QUERY_TAG, "epochDate: " + epochDayDate);
 
-                Allergen a = new Allergen();
-                a.setDate(epochDayDate) ;
-                DynamoDBQueryExpression<Allergen> queryExpression = new DynamoDBQueryExpression<Allergen>()
-                        .withHashKeyValues(a);
-                List<Allergen> allergenList = mapper.query(Allergen.class, queryExpression);
+            Allergen a = new Allergen();
+            a.setDate(epochDayDate);
+            DynamoDBQueryExpression<Allergen> queryExpression = new DynamoDBQueryExpression<Allergen>()
+                    .withHashKeyValues(a);
+            List<Allergen> allergenList = mapper.query(Allergen.class, queryExpression);
 
 //                Log.i("queryAllergensByDate", Arrays.toString(result.toArray()));
 
-                mAllergens = new Allergen[allergenList.size()];
-                mAllergens = allergenList.toArray(mAllergens);
-//                mAllergens = getTestAllergens();
-                if(mAllergens.length == 0){
-                    mQueryDate = CalendarHelper.prevWeekDay(mQueryDate);
-                    Log.i(QUERY_TAG, "No allergens found for current query date, setting query date to " + mQueryDate.getTime().toString());
-                    run();
-                } else {
-                    setValues();
-                }
+            if (allergenList.size() == 0) {
+                mQueryDate = CalendarHelper.prevWeekDay(mQueryDate);
+                Log.i(QUERY_TAG, "No allergens found for current query date, setting query date to " + mQueryDate.getTime().toString());
+                return doInBackground();
             }
+            else{
+                return allergenList;
+            }
+        }
 
-            public void setValues(){
-                for(Allergen allergen : mAllergens){
-                    allergen.setType();
-                    allergen.setLevel();
-                }
-                Arrays.sort(mAllergens);
-                Log.i(QUERY_TAG, Arrays.toString(mAllergens));
+        @Override
+        protected void onPostExecute(List<Allergen> allergenList){
+            mAllergens = new Allergen[allergenList.size()];
+            mAllergens = allergenList.toArray(mAllergens);
+//                mAllergens = getTestAllergens();
+
+            for(Allergen allergen : mAllergens){
+                allergen.setType();
+                allergen.setLevel();
+            }
+            Arrays.sort(mAllergens);
+            Log.i(QUERY_TAG, Arrays.toString(mAllergens));
 
                 /* set chart data and values */
-                mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
-                mChart.setOnValueTouchListener(new ValueTouchListener());
-                setChartValues();
-                mChart.setColumnChartData(data);
+            mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
+            mChart.setOnValueTouchListener(new ValueTouchListener());
+            setChartValues();
+            mChart.setColumnChartData(data);
 
 
                 /* set the "Reported on date" textview */
-                mDateReported = mRootview.findViewById(R.id.date_reported_tv);
-                long date = mAllergens[0].getDate();
-                mDateReported.setText(sdf.format(new Date((date + 1) * 86400000)));
+            mDateReported = mRootview.findViewById(R.id.date_reported_tv);
+            long date = mAllergens[0].getDate();
+            mDateReported.setText(sdf.format(new Date((date + 1) * 86400000)));
+        }
 
-            }
-        }).start();
     }
 
     private void getWeather(){

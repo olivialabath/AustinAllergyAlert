@@ -3,19 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.olivialabath.austinallergyalert.WeatherView
-        android:id="@+id/daily_weather_view"
+    <LinearLayout
+        android:id="@+id/weather"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp">
-    </com.olivialabath.austinallergyalert.WeatherView>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentTop="true">
+        <com.olivialabath.austinallergyalert.WeatherView
+            android:id="@+id/daily_weather_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+        </com.olivialabath.austinallergyalert.WeatherView>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_poweredby"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/reported_on"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/daily_weather_view"
+        android:layout_below="@id/weather"
         android:gravity="center"
         android:text="Showing values reported on:"
         android:textColor="@android:color/primary_text_light"/>
