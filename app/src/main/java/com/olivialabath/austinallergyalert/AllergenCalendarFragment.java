@@ -221,15 +221,15 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
     public int getFace(int rating){
         switch(rating) {
             case 0:
-                return R.mipmap.ic_very_good;
+                return R.mipmap.ic_very_good_round;
             case 1:
-                return R.mipmap.ic_good;
+                return R.mipmap.ic_good_round;
             case 2:
-                return R.mipmap.ic_neutral;
+                return R.mipmap.ic_neutral_round;
             case 3:
-                return R.mipmap.ic_bad;
+                return R.mipmap.ic_bad_round;
             case 4:
-                return R.mipmap.ic_very_bad;
+                return R.mipmap.ic_very_bad_round;
             default:
                 return 0;
         }

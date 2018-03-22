@@ -110,27 +110,27 @@ public class RatingDialogFragment extends DialogFragment {
                     case 0:
                         Log.d(TAG, "setting face to very good");
                         if(rating == -1) rating = 0;
-                        mSeekBarImage.setImageResource(R.mipmap.ic_very_good);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_very_good_round);
                         break;
                     case 1:
                         Log.d(TAG, "setting face to good");
-                        mSeekBarImage.setImageResource(R.mipmap.ic_good);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_good_round);
                         break;
                     case 2:
                         Log.d(TAG, "setting face to neutral");
-                        mSeekBarImage.setImageResource(R.mipmap.ic_neutral);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_neutral_round);
                         break;
                     case 3:
                         Log.d(TAG, "setting face to bad");
-                        mSeekBarImage.setImageResource(R.mipmap.ic_bad);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_bad_round);
                         break;
                     case 4:
                         Log.d(TAG, "setting face to very bad");
-                        mSeekBarImage.setImageResource(R.mipmap.ic_very_bad);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_very_bad_round);
                         break;
                     default:
                         Log.d(TAG, "setting face to very good");
-                        mSeekBarImage.setImageResource(R.mipmap.ic_very_good);
+                        mSeekBarImage.setImageResource(R.mipmap.ic_very_good_round);
                 }
             }
 
