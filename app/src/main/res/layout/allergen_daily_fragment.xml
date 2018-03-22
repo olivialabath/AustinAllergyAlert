@@ -17,6 +17,7 @@
             android:layout_marginBottom="5dp">
         </com.olivialabath.austinallergyalert.WeatherView>
         <ImageView
+            android:id="@+id/powered_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_poweredby"

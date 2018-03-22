@@ -1,5 +1,7 @@
 package com.olivialabath.austinallergyalert;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +55,7 @@ public class AllergenDailyFragment extends Fragment {
     private Allergen[] mAllergens;
     private View mRootview;
     private WeatherView mWeatherView;
+    private ImageView mPoweredByImage;
     private Calendar mCurrentDate = CalendarHelper.now();
     private Calendar mQueryDate = CalendarHelper.getQueryDate();
     private TextView mDateReported;
@@ -80,6 +84,16 @@ public class AllergenDailyFragment extends Fragment {
         /* inflate views */
         mRootview = inflater.inflate(R.layout.allergen_daily_fragment,container,false);
         mWeatherView = (WeatherView) mRootview.findViewById(R.id.daily_weather_view);
+        mPoweredByImage = (ImageView) mRootview.findViewById(R.id.powered_by);
+
+         /* set the on click listener for the "Powered By Dark Sky" image */
+         mPoweredByImage.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://darksky.net/poweredby/"));
+                 startActivity(browserIntent);
+             }
+         });
 
         /* get today's allergens */
         AllergenTask allergenTask = new AllergenTask();
