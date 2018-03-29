@@ -11,6 +11,7 @@
         tools:ignore="ContentDescription"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginLeft="5dp"
         android:layout_gravity="center"/>
 
     <LinearLayout

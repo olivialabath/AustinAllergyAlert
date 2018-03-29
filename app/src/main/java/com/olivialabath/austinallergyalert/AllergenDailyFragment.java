@@ -134,9 +134,10 @@ public class AllergenDailyFragment extends Fragment {
         axisX.setTextSize(13);
         axisX.setName("Allergens");
         /* if more than 6 allergens are found, tilt the labels
-                 * to prevent values from overlapping */
+        ** and shrink the text to prevent overlapping */
         if(mAllergens.length >= 6){
             axisX.setHasTiltedLabels(true);
+            axisX.setTextSize(12);
         }
         data.setAxisXBottom(axisX);
 
