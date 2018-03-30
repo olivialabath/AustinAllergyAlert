@@ -6,6 +6,4 @@
         android:summary="When enabled, you will receive daily push notifications when allergen counts are posted"
         android:defaultValue="true">
     </SwitchPreference>
-
-
 </PreferenceScreen>

@@ -1,6 +1,5 @@
 package com.olivialabath.austinallergyalert;
 
-import android.arch.persistence.room.Room;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;

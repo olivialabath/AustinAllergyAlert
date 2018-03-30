@@ -2,15 +2,12 @@ package com.olivialabath.austinallergyalert;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.arch.lifecycle.LifecycleOwner;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;

@@ -6,7 +6,6 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by olivialabath on 3/5/18.

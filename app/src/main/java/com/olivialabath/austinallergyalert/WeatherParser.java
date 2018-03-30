@@ -1,7 +1,5 @@
 package com.olivialabath.austinallergyalert;
 
-import android.util.Log;
-
 import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;

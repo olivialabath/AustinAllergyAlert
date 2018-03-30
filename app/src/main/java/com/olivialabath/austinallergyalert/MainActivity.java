@@ -1,8 +1,6 @@
 package com.olivialabath.austinallergyalert;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -11,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,20 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         mTabs.setViewPager(mPager);
-
-
-
-        // subscribe/unsubscribe to topics if alerts are enabled/disabled
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean isEnabled = prefs.getBoolean("alerts_enabled", true);
-        Log.d(TAG, "alerts_enabled = " + isEnabled);
-        if(isEnabled) {
-            Log.d(TAG, "subscribed to austinAllergens");
-            FirebaseMessaging.getInstance().subscribeToTopic("austinAllergens");
-        } else {
-            Log.d(TAG, "unsubscribed from austinAllergens");
-            FirebaseMessaging.getInstance().unsubscribeFromTopic("austinAllergens");
-        }
     }
 
     @Override
@@ -82,24 +65,4 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if(key.equals("alerts_enabled")){
-//
-//        }
-//    }
-//
-//
-//    private boolean isAlertServiceRunning(Class<?> serviceClass){
-//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-//            if(serviceClass.getName().equals(service.service.getClassName())){
-//                Log.i("isAlertServiceRunning", "" + true);
-//                return true;
-//            }
-//        }
-//        Log.i("isAlertServiceRunning", "" + false);
-//        return false;
-//    }
 }
