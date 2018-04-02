@@ -123,7 +123,7 @@ public class Allergen implements Comparable<Allergen>{
         public static final String[] Weeds = {"Pigweed", "Ragweed", "Marsh Elder"};
         public static final String[] Trees = {"Cedar", "Elm", "Oak", "Ash", "Mesquite", "Pecan",
                 "Privet", "Sycamore", "Mulberry", "Willow", "Red Juniper Berry", "Sage", "Acacia",
-                "Birch", "Hackberry", "Poplar", "Cottonwood", "Pine"};
+                "Birch", "Hackberry", "Poplar", "Cottonwood", "Pine", "Walnut"};
 
 
         /* enum describing the category the Allergen falls into */
