@@ -1,0 +1,130 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.olivialabath.austinallergyalert\">\n\n    <uses-permission android:name=\"android.permission.INTERNET\" />\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/AppTheme\">\n\n        <!-- default notification icon -->\n        <meta-data\n            android:name=\"com.google.firebase.messaging.default_notification_icon\"\n            android:resource=\"@drawable/ic_notification\" />\n\n        <!-- default notification icon color -->\n        <meta-data\n            android:name=\"com.google.firebase.messaging.default_notification_color\"\n            android:resource=\"@android:color/white\" />\n\n        <!-- default notification channel -->\n        <meta-data\n            android:name=\"com.google.firebase.messaging.default_notification_channel_id\"\n            android:value=\"IMPORTANCE_LOW\" />\n\n        <!-- Main Activity -->\n        <activity\n            android:name=\".MainActivity\"\n            android:screenOrientation=\"portrait\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n\n        <!-- About Activity -->\n        <activity\n            android:name=\".AboutActivity\"\n            android:parentActivityName=\".MainActivity\"\n            android:screenOrientation=\"portrait\">\n        </activity>\n\n        <!-- Alert Setting Activity -->\n        <activity\n            android:name=\".SettingsActivity\"\n            android:parentActivityName=\".MainActivity\"\n            android:screenOrientation=\"portrait\">\n        </activity>\n\n        <!-- Firebase service -->\n        <service android:name=\".AlertService\">\n            <intent-filter>\n                <action android:name=\"com.google.firebase.MESSAGING_EVENT\" />\n            </intent-filter>\n        </service>\n\n        <!-- Firebase instance id service -->\n        <service android:name=\".AlertInstanceIDService\">\n            <intent-filter>\n                <action android:name=\"com.google.firebase.INSTANCE_ID_EVENT\" />\n            </intent-filter>\n        </service>\n\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(date 1522706843000)
++++ app/src/main/AndroidManifest.xml	(revision )
+@@ -5,9 +5,10 @@
+     <uses-permission android:name="android.permission.INTERNET" />
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+ 
++
+     <application
+         android:allowBackup="true"
+-        android:icon="@mipmap/ic_launcher"
++        android:icon="@mipmap/ic_launcher_round"
+         android:label="@string/app_name"
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme">
+Index: app/src/main/java/com/olivialabath/austinallergyalert/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.olivialabath.austinallergyalert;\n\nimport android.content.Intent;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.support.v4.view.ViewPager;\nimport android.util.Log;\nimport android.view.Menu;\nimport android.view.MenuItem;\n\nimport com.google.firebase.iid.FirebaseInstanceId;\n\npublic class MainActivity extends AppCompatActivity {\n\n    private ViewPager mPager;\n    private ViewPagerAdapter mAdapter;\n    private SlidingTabLayout mTabs;\n\n    private final CharSequence TAB_NAMES[] = {\"Daily Allergens\",\"Calendar\"};\n    private final int NUM_TABS = 2;\n    private final String TAG = \"MainActivity\";\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_main);\n\n        String token = FirebaseInstanceId.getInstance().getToken();\n        Log.d(TAG, \"Token = \" + token);\n\n        // Creating The ViewPagerAdapter and Passing Fragment Manager, TAB_NAMES fot the Tabs and Number Of Tabs.\n        mAdapter =  new ViewPagerAdapter(getSupportFragmentManager(), TAB_NAMES, NUM_TABS);\n\n        // Assigning ViewPager View and setting the mAdapter\n        mPager = (ViewPager) findViewById(R.id.pager);\n        mPager.setAdapter(mAdapter);\n\n        // Assigning the Sliding Tab Layout View\n        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);\n        mTabs.setDistributeEvenly(true);\n\n        // Setting the ViewPager For the SlidingTabsLayout\n        mTabs.setViewPager(mPager);\n    }\n\n    @Override\n    public boolean onCreateOptionsMenu(Menu menu){\n        getMenuInflater().inflate(R.menu.menu, menu);\n        return true;\n    }\n\n    @Override\n    public boolean onOptionsItemSelected(MenuItem item){\n        Intent intent;\n        switch (item.getItemId()){\n            case R.id.about:\n                intent = new Intent(this, AboutActivity.class);\n                startActivity(intent);\n                return true;\n            case R.id.settings:\n                intent = new Intent(this, SettingsActivity.class);\n                startActivity(intent);\n                return true;\n            default:\n                return super.onOptionsItemSelected(item);\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/olivialabath/austinallergyalert/MainActivity.java	(date 1522706843000)
++++ app/src/main/java/com/olivialabath/austinallergyalert/MainActivity.java	(revision )
+@@ -1,6 +1,9 @@
+ package com.olivialabath.austinallergyalert;
+ 
++import android.content.Context;
+ import android.content.Intent;
++import android.content.SharedPreferences;
++import android.preference.PreferenceManager;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.support.v4.view.ViewPager;
+@@ -9,12 +12,14 @@
+ import android.view.MenuItem;
+ 
+ import com.google.firebase.iid.FirebaseInstanceId;
++import com.google.firebase.messaging.FirebaseMessaging;
+ 
+ public class MainActivity extends AppCompatActivity {
+ 
+     private ViewPager mPager;
+     private ViewPagerAdapter mAdapter;
+     private SlidingTabLayout mTabs;
++    private SharedPreferences mPrefs;
+ 
+     private final CharSequence TAB_NAMES[] = {"Daily Allergens","Calendar"};
+     private final int NUM_TABS = 2;
+@@ -28,6 +33,11 @@
+         String token = FirebaseInstanceId.getInstance().getToken();
+         Log.d(TAG, "Token = " + token);
+ 
++        // if this is the first time opening the app, automatically subscribe to the topic
++        mPrefs = getSharedPreferences("preference_file_key", Context.MODE_PRIVATE);
++        if(mPrefs.getBoolean("first_time", true))
++            subscribeToTopic();
++
+         // Creating The ViewPagerAdapter and Passing Fragment Manager, TAB_NAMES fot the Tabs and Number Of Tabs.
+         mAdapter =  new ViewPagerAdapter(getSupportFragmentManager(), TAB_NAMES, NUM_TABS);
+ 
+@@ -65,4 +75,10 @@
+                 return super.onOptionsItemSelected(item);
+         }
+     }
++
++    private void subscribeToTopic(){
++        Log.d(TAG, "subscribing to austinAllergens");
++        FirebaseMessaging.getInstance().subscribeToTopic("austinAllergens");
++        mPrefs.edit().putBoolean("first_time", false).commit();
++    }
+ }
+Index: app/src/main/java/com/olivialabath/austinallergyalert/AllergenDailyFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.olivialabath.austinallergyalert;\n\nimport android.content.Intent;\nimport android.net.Uri;\nimport android.os.AsyncTask;\nimport android.os.Bundle;\nimport android.support.annotation.Nullable;\nimport android.support.v4.app.Fragment;\nimport android.support.v4.content.ContextCompat;\nimport android.util.Log;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\nimport android.widget.ImageView;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\nimport com.amazonaws.auth.CognitoCachingCredentialsProvider;\nimport com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;\nimport com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;\nimport com.amazonaws.regions.Region;\nimport com.amazonaws.regions.Regions;\nimport com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;\nimport com.android.volley.Request;\nimport com.android.volley.RequestQueue;\nimport com.android.volley.Response;\nimport com.android.volley.VolleyError;\nimport com.android.volley.toolbox.StringRequest;\nimport com.android.volley.toolbox.Volley;\n\nimport java.text.SimpleDateFormat;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Calendar;\nimport java.util.Date;\nimport java.util.List;\n\nimport lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;\nimport lecho.lib.hellocharts.model.Axis;\nimport lecho.lib.hellocharts.model.AxisValue;\nimport lecho.lib.hellocharts.model.Column;\nimport lecho.lib.hellocharts.model.ColumnChartData;\nimport lecho.lib.hellocharts.model.SubcolumnValue;\nimport lecho.lib.hellocharts.view.ColumnChartView;\n\n/**\n * Created by olivialabath on 6/18/17.\n */\npublic class AllergenDailyFragment extends Fragment {\n\n    private final String TAG = \"AllergenDailyFragment\";\n\n    private ColumnChartView mChart;\n    private ColumnChartData data;\n    private Allergen[] mAllergens;\n    private View mRootview;\n    private WeatherView mWeatherView;\n    private ImageView mPoweredByImage;\n    private Calendar mCurrentDate = CalendarHelper.now();\n    private Calendar mQueryDate = CalendarHelper.getQueryDate();\n    private TextView mDateReported;\n    private SimpleDateFormat sdf = new SimpleDateFormat(\"EEE MMM d, yyyy\");\n\n    private DynamoDBMapper mapper;\n\n    @Override\n    public void onCreate(Bundle savedInstanceState){\n        super.onCreate(savedInstanceState);\n\n        /* create the dynamodb mapper */\n        CognitoCachingCredentialsProvider credentials = new CognitoCachingCredentialsProvider(\n                getContext(),\n                Config.identityPool, // Identity pool ID\n                Regions.US_EAST_2 // Region\n        );\n        AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentials);\n        ddbClient.setRegion(Region.getRegion(Regions.US_EAST_2));\n        mapper = new DynamoDBMapper(ddbClient);\n\n    }\n\n    @Override\n    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {\n        /* inflate views */\n        mRootview = inflater.inflate(R.layout.allergen_daily_fragment,container,false);\n        mWeatherView = (WeatherView) mRootview.findViewById(R.id.daily_weather_view);\n        mPoweredByImage = (ImageView) mRootview.findViewById(R.id.powered_by);\n\n         /* set the on click listener for the \"Powered By Dark Sky\" image */\n         mPoweredByImage.setOnClickListener(new View.OnClickListener() {\n             @Override\n             public void onClick(View view) {\n                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(\"https://darksky.net/poweredby/\"));\n                 startActivity(browserIntent);\n             }\n         });\n\n        /* get today's allergens */\n        AllergenTask allergenTask = new AllergenTask();\n        allergenTask.execute();\n\n        /* get the 5 day forecast */\n        getWeather();\n\n        Log.i(TAG, \"QueryDate: \" + mQueryDate.getTime().toString());\n\n        return mRootview;\n    }\n\n    public void setChartValues() {\n        List<Column> columns = new ArrayList<Column>();\n        List<SubcolumnValue> values;\n        List<AxisValue> axisValues = new ArrayList<AxisValue>();\n\n        for(int i = 0; i < mAllergens.length; ++i) {\n            /* set the column count and color */\n            values = new ArrayList<SubcolumnValue>();\n            values.add(new SubcolumnValue(mAllergens[i].getCount(), getColumnColor(mAllergens[i])));\n            Column c = new Column(values);\n\n            /* set the x axis labels */\n            AxisValue av = new AxisValue(i);\n            av.setLabel(mAllergens[i].getName());\n            axisValues.add(av);\n            c.setHasLabels(true);\n\n            columns.add(c);\n        }\n        data = new ColumnChartData(columns);\n\n        /* x axis stuff */\n        Axis axisX = new Axis(axisValues);\n        axisX.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));\n        axisX.setTextSize(13);\n        axisX.setName(\"Allergens\");\n        /* if more than 6 allergens are found, tilt the labels\n        ** and shrink the text to prevent overlapping */\n        if(mAllergens.length >= 6){\n            axisX.setHasTiltedLabels(true);\n            axisX.setTextSize(12);\n        }\n        data.setAxisXBottom(axisX);\n\n        /* y axis stuff */\n        Axis axisY = new Axis().setHasLines(true);\n        axisY.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));\n        axisY.setTextSize(13);\n        axisY.setName(\"Allergen Counts\");\n        data.setAxisYLeft(axisY);\n    }\n\n    private int getColumnColor(Allergen a) {\n        switch(a.getLevel()) {\n            case Trace:\n                return ContextCompat.getColor(getContext(), R.color.colorTrace);\n            case Low:\n                return ContextCompat.getColor(getContext(), R.color.colorLow);\n            case Medium:\n                return ContextCompat.getColor(getContext(), R.color.colorMed);\n            case High:\n                return ContextCompat.getColor(getContext(), R.color.colorHigh);\n            case Very_High:\n                return ContextCompat.getColor(getContext(), R.color.colorVHigh);\n            default:\n                return ContextCompat.getColor(getContext(), R.color.black);\n        }\n    }\n\n    private Allergen[] getTestAllergens(){\n        Calendar c = mQueryDate;\n        Allergen[] allergenArray = {\n                new Allergen(\"Pine\", 5, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Elm\", 12, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Pigweed\", 39, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Mold\", 49, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Ragweed\", 92, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Cedar\", 150, CalendarHelper.getEpochDays(c)),\n                new Allergen(\"Grass\", 211, CalendarHelper.getEpochDays(c))\n        };\n\n        return allergenArray;\n    }\n\n\n    private class ValueTouchListener implements ColumnChartOnValueSelectListener {\n\n        @Override\n        public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {\n            //Log.d(TAG, \"column pressed\");\n            Allergen a = mAllergens[columnIndex];\n            String toastString = a.getName() + \"\\nType: \"+ a.getType().toString() +\n                    \"\\nCount: \" + a.getCount() + \"\\nLevel: \" + a.getLevel().toString();\n            Toast.makeText(getContext(), toastString, Toast.LENGTH_SHORT).show();\n\n        }\n\n        @Override\n        public void onValueDeselected() { }\n\n    }\n\n    private class AllergenTask extends AsyncTask<Void, Void, List<Allergen>>{\n        final String QUERY_TAG = \"queryAllergensByDate\";\n\n        @Override\n        protected List<Allergen> doInBackground(Void... voids) {\n            long epochDayDate = CalendarHelper.getEpochDays(mQueryDate);\n            Log.i(QUERY_TAG, \"epochDate: \" + epochDayDate);\n\n            Allergen a = new Allergen();\n            a.setDate(epochDayDate);\n            DynamoDBQueryExpression<Allergen> queryExpression = new DynamoDBQueryExpression<Allergen>()\n                    .withHashKeyValues(a);\n            List<Allergen> allergenList = mapper.query(Allergen.class, queryExpression);\n\n//                Log.i(\"queryAllergensByDate\", Arrays.toString(result.toArray()));\n\n            if (allergenList.size() == 0) {\n                mQueryDate = CalendarHelper.prevWeekDay(mQueryDate);\n                Log.i(QUERY_TAG, \"No allergens found for current query date, setting query date to \" + mQueryDate.getTime().toString());\n                return doInBackground();\n            }\n            else{\n                return allergenList;\n            }\n        }\n\n        @Override\n        protected void onPostExecute(List<Allergen> allergenList){\n            mAllergens = new Allergen[allergenList.size()];\n            mAllergens = allergenList.toArray(mAllergens);\n//                mAllergens = getTestAllergens();\n\n            for(Allergen allergen : mAllergens){\n                allergen.setType();\n                allergen.setLevel();\n            }\n            Arrays.sort(mAllergens);\n            Log.i(QUERY_TAG, Arrays.toString(mAllergens));\n\n                /* set chart data and values */\n            mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);\n            mChart.setOnValueTouchListener(new ValueTouchListener());\n            setChartValues();\n            mChart.setColumnChartData(data);\n\n\n                /* set the \"Reported on date\" textview */\n            mDateReported = mRootview.findViewById(R.id.date_reported_tv);\n            long date = mAllergens[0].getDate();\n            mDateReported.setText(sdf.format(new Date((date + 1) * 86400000)));\n        }\n\n    }\n\n    private void getWeather(){\n\n        RequestQueue queue = Volley.newRequestQueue(getContext());\n        String url = \"https://api.darksky.net/forecast/\" + Config.DarkSkyAPIKey + \"/30.2672,-97.7431?exclude=currently,minutely,hourly,alerts,flags\";\n\n        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,\n                new Response.Listener<String>() {\n                    @Override\n                    public void onResponse(String response) {\n                        WeatherParser wp = new WeatherParser();\n                        Weather[] weather = wp.parse(response.toString());\n                        Log.i(\"getWeather\", Arrays.toString(weather));\n                        mWeatherView.setWeather(weather);\n                    }\n                }, new Response.ErrorListener() {\n            @Override\n            public void onErrorResponse(VolleyError error) {\n\n            }\n        });\n\n        queue.add(stringRequest);\n\n\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/olivialabath/austinallergyalert/AllergenDailyFragment.java	(date 1522706843000)
++++ app/src/main/java/com/olivialabath/austinallergyalert/AllergenDailyFragment.java	(revision )
+@@ -8,6 +8,7 @@
+ import android.support.v4.app.Fragment;
+ import android.support.v4.content.ContextCompat;
+ import android.util.Log;
++import android.view.DragEvent;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+@@ -238,14 +239,14 @@
+             Arrays.sort(mAllergens);
+             Log.i(QUERY_TAG, Arrays.toString(mAllergens));
+ 
+-                /* set chart data and values */
++            /* set chart data and values */
+             mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
+             mChart.setOnValueTouchListener(new ValueTouchListener());
+             setChartValues();
+             mChart.setColumnChartData(data);
+ 
+ 
+-                /* set the "Reported on date" textview */
++            /* set the "Reported on date" textview */
+             mDateReported = mRootview.findViewById(R.id.date_reported_tv);
+             long date = mAllergens[0].getDate();
+             mDateReported.setText(sdf.format(new Date((date + 1) * 86400000)));
+Index: app/src/main/res/layout/allergen_calendar_fragment.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    android:orientation=\"vertical\">\n\n    <com.olivialabath.austinallergyalert.CustomCalendarView\n        android:id=\"@+id/calendar\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\">\n    </com.olivialabath.austinallergyalert.CustomCalendarView>\n\n    <RelativeLayout\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\">\n\n        <TextView\n            android:id=\"@+id/calendar_date_tv\"\n            android:layout_width=\"wrap_content\"\n            android:layout_height=\"wrap_content\"\n            android:layout_centerInParent=\"true\"\n            android:gravity=\"center_horizontal\"\n            android:padding=\"20dp\"\n            android:textSize=\"16sp\"\n            android:textStyle=\"bold\"\n            android:textColor=\"@color/black\"/>\n\n        <ImageButton\n            android:id=\"@+id/rating_edit_button\"\n            android:layout_width=\"wrap_content\"\n            android:layout_height=\"wrap_content\"\n            android:src=\"@drawable/ic_edit_black_24dp\"\n            android:layout_toEndOf=\"@id/calendar_date_tv\"\n            android:layout_centerInParent=\"true\"\n            android:background=\"#ffffff\"/>\n    </RelativeLayout>\n\n    <LinearLayout\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\"\n        android:orientation=\"horizontal\">\n        \n        <LinearLayout\n            android:layout_width=\"0dp\"\n            android:layout_height=\"wrap_content\"\n            android:orientation=\"horizontal\"\n            android:layout_weight=\"1\"\n            android:paddingLeft=\"10dp\">\n\n            <TextView\n                android:layout_width=\"wrap_content\"\n                android:layout_height=\"wrap_content\"\n                android:text=\"@string/your_rating\"\n                android:textColor=\"@color/black\"/>\n\n            <ImageView\n                android:id=\"@+id/calendar_face\"\n                android:layout_width=\"40dp\"\n                android:layout_height=\"40dp\"\n                android:layout_marginStart=\"10dp\"/>\n\n        </LinearLayout>\n\n        <LinearLayout\n            android:layout_width=\"0dp\"\n            android:layout_height=\"wrap_content\"\n            android:orientation=\"vertical\"\n            android:layout_weight=\"1\"\n            android:paddingLeft=\"10dp\">\n\n            <TextView\n                android:layout_width=\"wrap_content\"\n                android:layout_height=\"wrap_content\"\n                android:text=\"@string/your_notes\"\n                android:textColor=\"@color/black\"/>\n\n            <TextView\n                android:id=\"@+id/calendar_notes\"\n                android:layout_width=\"wrap_content\"\n                android:layout_height=\"wrap_content\"\n                android:paddingRight=\"10dp\"/>\n\n        </LinearLayout>\n\n    </LinearLayout>\n\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/allergen_calendar_fragment.xml	(date 1522706843000)
++++ app/src/main/res/layout/allergen_calendar_fragment.xml	(revision )
+@@ -20,7 +20,7 @@
+             android:layout_height="wrap_content"
+             android:layout_centerInParent="true"
+             android:gravity="center_horizontal"
+-            android:padding="20dp"
++            android:padding="15dp"
+             android:textSize="16sp"
+             android:textStyle="bold"
+             android:textColor="@color/black"/>
