@@ -32,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
         mAdapter =  new ViewPagerAdapter(getSupportFragmentManager(), TAB_NAMES, NUM_TABS);
 
         // Assigning ViewPager View and setting the mAdapter
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
         // Assigning the Sliding Tab Layout View
-        mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        mTabs = findViewById(R.id.tabs);
         mTabs.setDistributeEvenly(true);
 
         // Setting the ViewPager For the SlidingTabsLayout

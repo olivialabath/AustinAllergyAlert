@@ -137,7 +137,7 @@ public class Allergen implements Comparable<Allergen>{
         public static final String[] AllergenLevelStrings = {"Trace", "Low", "Medium", "High", "Very High"};
 
         /* enum describing how low or high Allergen.count is from Trace to Very_High */
-        public static enum AllergenLevel {
+        public enum AllergenLevel {
             Trace(0), Low(1), Medium(2), High(3), Very_High(4);
             private final int value;
             private AllergenLevel(int value) { this.value = value; }

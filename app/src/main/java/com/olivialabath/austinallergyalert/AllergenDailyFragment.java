@@ -132,7 +132,7 @@ public class AllergenDailyFragment extends Fragment {
         Axis axisX = new Axis(axisValues);
         axisX.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
         axisX.setTextSize(13);
-        axisX.setName("Allergens");
+//        axisX.setName("Allergens");
         /* if more than 6 allergens are found, tilt the labels
         ** and shrink the text to prevent overlapping */
         if(mAllergens.length >= 6){
@@ -229,7 +229,7 @@ public class AllergenDailyFragment extends Fragment {
         protected void onPostExecute(List<Allergen> allergenList){
             mAllergens = new Allergen[allergenList.size()];
             mAllergens = allergenList.toArray(mAllergens);
-//                mAllergens = getTestAllergens();
+//            mAllergens = getTestAllergens();
 
             for(Allergen allergen : mAllergens){
                 allergen.setType();
