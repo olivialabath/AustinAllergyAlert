@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
-            android:padding="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -29,7 +30,8 @@
             android:id="@+id/rating_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit_black_24dp"
+            android:paddingLeft="10dp"
+            android:src="@drawable/ic_edit_black_32dp"
             android:layout_toEndOf="@id/calendar_date_tv"
             android:layout_centerInParent="true"
             android:background="#ffffff"/>

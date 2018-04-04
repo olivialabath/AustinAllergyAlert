@@ -125,7 +125,7 @@
         android:id="@+id/allergen_chart"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:padding="15dp"
+        android:padding="20dp"
         android:layout_above="@id/chart_key"
         android:layout_below="@id/date_reported_tv"
         android:background="@android:color/background_light">

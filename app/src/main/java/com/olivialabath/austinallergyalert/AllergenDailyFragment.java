@@ -145,7 +145,7 @@ public class AllergenDailyFragment extends Fragment {
         Axis axisY = new Axis().setHasLines(true);
         axisY.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
         axisY.setTextSize(13);
-        axisY.setName("Allergen Counts");
+//        axisY.setName("Allergen Counts");
         data.setAxisYLeft(axisY);
     }
 
