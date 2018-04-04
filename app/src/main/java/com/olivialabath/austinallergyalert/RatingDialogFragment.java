@@ -81,7 +81,7 @@ public class RatingDialogFragment extends DialogFragment {
 
                         EditRatingDialogListener listener = (EditRatingDialogListener) getTargetFragment();
                         listener.onSave(rating, note);
-                        Log.i(TAG, "rating: " + rating + ", note: " + note);
+                        //Log.i(TAG, "rating: " + rating + ", note: " + note);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -105,28 +105,28 @@ public class RatingDialogFragment extends DialogFragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch(progress) {
                     case 0:
-                        Log.d(TAG, "setting face to very good");
+                        //Log.d(TAG, "setting face to very good");
                         if(rating == -1) rating = 0;
                         mSeekBarImage.setImageResource(R.mipmap.ic_very_good_round);
                         break;
                     case 1:
-                        Log.d(TAG, "setting face to good");
+                        //Log.d(TAG, "setting face to good");
                         mSeekBarImage.setImageResource(R.mipmap.ic_good_round);
                         break;
                     case 2:
-                        Log.d(TAG, "setting face to neutral");
+                        //Log.d(TAG, "setting face to neutral");
                         mSeekBarImage.setImageResource(R.mipmap.ic_neutral_round);
                         break;
                     case 3:
-                        Log.d(TAG, "setting face to bad");
+                        //Log.d(TAG, "setting face to bad");
                         mSeekBarImage.setImageResource(R.mipmap.ic_bad_round);
                         break;
                     case 4:
-                        Log.d(TAG, "setting face to very bad");
+                        //Log.d(TAG, "setting face to very bad");
                         mSeekBarImage.setImageResource(R.mipmap.ic_very_bad_round);
                         break;
                     default:
-                        Log.d(TAG, "setting face to very good");
+                        //Log.d(TAG, "setting face to very good");
                         mSeekBarImage.setImageResource(R.mipmap.ic_very_good_round);
                 }
             }

@@ -92,13 +92,13 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                 if((mSelectedDate.getYear() == mCurrentDate.getYear()
                         && mSelectedDate.getDayOfYear() > mCurrentDate.getDayOfYear())
                         || mSelectedDate.getYear() > mCurrentDate.getYear()){
-//                    Log.i(TAG, "disabling edit button");
+//                    //Log.i(TAG, "disabling edit button");
                     mEditButton.setEnabled(false);
                     mEditButton.setColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP);
                 }
                 // if it's in past or present and currently disabled, enable it
                 else {
-//                    Log.i(TAG, "enabling edit button");
+//                    //Log.i(TAG, "enabling edit button");
                     mEditButton.setEnabled(true);
                     mEditButton.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -135,7 +135,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
         mRatingFace.setImageResource(getFace(rating));
         mNotesText.setText(note);
 
-        Log.i(TAG, "saving rating: " + rating + ", note: " + note);
+        //Log.i(TAG, "saving rating: " + rating + ", note: " + note);
         insertRating(rating, note);
     }
 
@@ -144,7 +144,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             @Override
             public void run() {
                 ratings = db.ratingDAO().getAll();
-                Log.d(TAG, "All Ratings: " + Arrays.toString(ratings.toArray()));
+                //Log.d(TAG, "All Ratings: " + Arrays.toString(ratings.toArray()));
             }
         }).start();
     }
@@ -158,10 +158,10 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
             int monthBeginCell = (startDate.getDayOfWeek()) % 7;
             startDate = startDate.minusDays(monthBeginCell);
             LocalDate endDate = startDate.plusDays(41);
-            Log.d(TAG, "startDate: " + startDate.toString() + ", endDate: " + endDate.toString());
+            //Log.d(TAG, "startDate: " + startDate.toString() + ", endDate: " + endDate.toString());
             long from = startDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
             long to = endDate.toDateTimeAtStartOfDay().getMillis() / MILLIS_IN_DAY;
-            Log.d(TAG, "from: "  + from + ", to: " + to);
+            //Log.d(TAG, "from: "  + from + ", to: " + to);
 
             // get the ratings
             List<Rating> ratingsList = db.ratingDAO().loadFromRange(from, to);
@@ -175,10 +175,10 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                 else
                     r = ratingsList.get(i);
 
-//                Log.d(TAG, "doInBackground: selectedDate = " + mSelectedDate.toString() + ", startDate = " + startDate.toString());
+//                //Log.d(TAG, "doInBackground: selectedDate = " + mSelectedDate.toString() + ", startDate = " + startDate.toString());
             }
 
-            Log.i(TAG, "selected month's Ratings: " + Arrays.toString(ratingsList.toArray()));
+            //Log.i(TAG, "selected month's Ratings: " + Arrays.toString(ratingsList.toArray()));
 
             return ratingsList;
         }
@@ -212,7 +212,7 @@ public class AllergenCalendarFragment extends Fragment implements RatingDialogFr
                 selectedRating = r;
 
                 db.ratingDAO().insertRating(r);
-                Log.i(TAG, "saving note for " + mSelectedDate.toString());
+                //Log.i(TAG, "saving note for " + mSelectedDate.toString());
             }
         }).start();
     }

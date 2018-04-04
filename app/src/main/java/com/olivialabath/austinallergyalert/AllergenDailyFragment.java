@@ -102,7 +102,7 @@ public class AllergenDailyFragment extends Fragment {
         /* get the 5 day forecast */
         getWeather();
 
-        Log.i(TAG, "QueryDate: " + mQueryDate.getTime().toString());
+        //Log.i(TAG, "QueryDate: " + mQueryDate.getTime().toString());
 
         return mRootview;
     }
@@ -186,7 +186,7 @@ public class AllergenDailyFragment extends Fragment {
 
         @Override
         public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            //Log.d(TAG, "column pressed");
+            ////Log.d(TAG, "column pressed");
             Allergen a = mAllergens[columnIndex];
             String toastString = a.getName() + "\nType: "+ a.getType().toString() +
                     "\nCount: " + a.getCount() + "\nLevel: " + a.getLevel().toString();
@@ -205,7 +205,7 @@ public class AllergenDailyFragment extends Fragment {
         @Override
         protected List<Allergen> doInBackground(Void... voids) {
             long epochDayDate = CalendarHelper.getEpochDays(mQueryDate);
-            Log.i(QUERY_TAG, "epochDate: " + epochDayDate);
+            //Log.i(QUERY_TAG, "epochDate: " + epochDayDate);
 
             Allergen a = new Allergen();
             a.setDate(epochDayDate);
@@ -213,11 +213,11 @@ public class AllergenDailyFragment extends Fragment {
                     .withHashKeyValues(a);
             List<Allergen> allergenList = mapper.query(Allergen.class, queryExpression);
 
-//                Log.i("queryAllergensByDate", Arrays.toString(result.toArray()));
+//                //Log.i("queryAllergensByDate", Arrays.toString(result.toArray()));
 
             if (allergenList.size() == 0) {
                 mQueryDate = CalendarHelper.prevWeekDay(mQueryDate);
-                Log.i(QUERY_TAG, "No allergens found for current query date, setting query date to " + mQueryDate.getTime().toString());
+                //Log.i(QUERY_TAG, "No allergens found for current query date, setting query date to " + mQueryDate.getTime().toString());
                 return doInBackground();
             }
             else{
@@ -236,7 +236,7 @@ public class AllergenDailyFragment extends Fragment {
                 allergen.setLevel();
             }
             Arrays.sort(mAllergens);
-            Log.i(QUERY_TAG, Arrays.toString(mAllergens));
+            //Log.i(QUERY_TAG, Arrays.toString(mAllergens));
 
                 /* set chart data and values */
             mChart = (ColumnChartView) mRootview.findViewById(R.id.allergen_chart);
@@ -264,7 +264,7 @@ public class AllergenDailyFragment extends Fragment {
                     public void onResponse(String response) {
                         WeatherParser wp = new WeatherParser();
                         Weather[] weather = wp.parse(response.toString());
-                        Log.i("getWeather", Arrays.toString(weather));
+                        //Log.i("getWeather", Arrays.toString(weather));
                         mWeatherView.setWeather(weather);
                     }
                 }, new Response.ErrorListener() {

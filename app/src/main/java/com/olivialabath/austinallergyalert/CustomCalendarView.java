@@ -140,7 +140,7 @@ public class CustomCalendarView extends LinearLayout
         // determine the cell for current month's beginning
         LocalDate calendar = displayDate.withDayOfMonth(1);
         int monthBeginningCell = (calendar.getDayOfWeek()) % 7;
-        Log.d(TAG, "monthBegin: " + monthBeginningCell);
+        //Log.d(TAG, "monthBegin: " + monthBeginningCell);
 
         // move custom_calendar_view backwards to the beginning of the week
         calendar = calendar.minusDays(monthBeginningCell);
@@ -151,7 +151,7 @@ public class CustomCalendarView extends LinearLayout
             days.add(calendar);
             calendar = calendar.plusDays(1);
         }
-        Log.d(TAG, "Days = " + Arrays.toString(days.toArray()));
+        //Log.d(TAG, "Days = " + Arrays.toString(days.toArray()));
 
         // update title
         SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
@@ -182,7 +182,7 @@ public class CustomCalendarView extends LinearLayout
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             prevDate = selectedDate;
             selectedDate = days.get(position);
-            Log.i(TAG, "SelectedDate = " + selectedDate.toString());
+            //Log.i(TAG, "SelectedDate = " + selectedDate.toString());
 
             TextView tv = (TextView) view;
 
@@ -235,7 +235,7 @@ public class CustomCalendarView extends LinearLayout
         {
             // day in question
             LocalDate date = getItem(position);
-//            Log.d(TAG, "Date in getView: " + date.toString());
+//            //Log.d(TAG, "Date in getView: " + date.toString());
 
             TextView tv;
             if(view == null) {

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String token = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Token = " + token);
+        //Log.d(TAG, "Token = " + token);
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, TAB_NAMES fot the Tabs and Number Of Tabs.
         mAdapter =  new ViewPagerAdapter(getSupportFragmentManager(), TAB_NAMES, NUM_TABS);

@@ -45,10 +45,10 @@ public class SettingsActivity extends AppCompatActivity{
                 public boolean onPreferenceChange(Preference preference, Object o) {
                     boolean isEnabled = (boolean) o;
                     if (isEnabled) {
-                        Log.d(TAG, "subscribing to austinAllergens");
+                        //Log.d(TAG, "subscribing to austinAllergens");
                         FirebaseMessaging.getInstance().subscribeToTopic("austinAllergens");
                     } else {
-                        Log.d(TAG, "unsubscribing from austinAllergens");
+                        //Log.d(TAG, "unsubscribing from austinAllergens");
                         FirebaseMessaging.getInstance().unsubscribeFromTopic("austinAllergens");
                     }
                     return true;
